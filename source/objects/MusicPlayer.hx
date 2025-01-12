@@ -167,7 +167,7 @@ class MusicPlayer extends FlxGroup
 		else if (controls.UI_DOWN_P)
 		{
 			holdPitchTime = 0;
-			playbackRate -= 0.05;
+			playbackRate -= 0.01;
 			setPlaybackRate();
 		}
 		if (controls.UI_DOWN || controls.UI_UP)
@@ -175,7 +175,7 @@ class MusicPlayer extends FlxGroup
 			holdPitchTime += elapsed;
 			if (holdPitchTime > 0.6)
 			{
-				playbackRate += 0.05 * (controls.UI_UP ? 1 : -1);
+				playbackRate += 0.01 * (controls.UI_UP ? 1 : -1);
 				setPlaybackRate();
 			}
 		}

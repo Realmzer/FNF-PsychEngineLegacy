@@ -17,6 +17,8 @@ import openfl.events.Event;
 import openfl.display.StageScaleMode;
 import lime.app.Application;
 import states.TitleState;
+import backend.ClientPrefs;
+import objects.FunkinSoundTray;
 
 #if linux
 import lime.graphics.Image;
@@ -124,7 +126,12 @@ class Main extends Sprite
 		Controls.instance = new Controls();
 		ClientPrefs.loadDefaultKeys();
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
-		addChild(new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
+		var game:FlxGame = new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.skipSplash, game.startFullscreen);
+		// You can comment out "@:privateAccess" and "game._customSoundTray = objects.FunkinSoundTray;" to remove the funkin sound tray
+		@:privateAccess 
+		game._customSoundTray = objects.FunkinSoundTray;
+		addChild(game);
+
 
 		#if !mobile
 		fpsVar = new FPSCounter(10, 3, 0xFFFFFF);
@@ -139,6 +146,15 @@ class Main extends Sprite
 		#if linux
 		var icon = Image.fromFile("icon.png");
 		Lib.current.stage.window.setIcon(icon);
+		#end
+
+		#if windows //DPI AWARENESS BABY
+		@:functionCode("
+		#include <Windows.h>
+		#include <winuser.h>
+		SetProcessDPIAware() // allows for more crisp visuals
+		DisableProcessWindowsGhosting() // lets you move the window and such if it's not responding
+		")
 		#end
 
 		#if html5
@@ -192,7 +208,7 @@ class Main extends Sprite
 		dateNow = dateNow.replace(" ", "_");
 		dateNow = dateNow.replace(":", "'");
 
-		path = "./crash/" + "PsychEngine_" + dateNow + ".txt";
+		path = "./crash/" + "PsychEngineLegacy_" + dateNow + ".txt";
 
 		for (stackItem in callStack)
 		{
@@ -212,7 +228,7 @@ class Main extends Sprite
 		*/
 		// 
 		#if officialBuild
-		errMsg += "\nPlease report this error to the GitHub page: https://github.com/ShadowMario/FNF-PsychEngine\n\n> Crash Handler written by: sqirra-rng";
+		errMsg += "\nPlease report this error to the GitHub page: https://github.com/Realmzer/FNF-PsychEngineLegacy\n\n> Crash Handler written by: sqirra-rng";
 		#end
 
 		if (!FileSystem.exists("./crash/"))

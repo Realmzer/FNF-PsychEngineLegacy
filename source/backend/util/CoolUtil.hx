@@ -1,4 +1,4 @@
-package backend;
+package backend.util;
 
 import openfl.utils.Assets;
 import lime.utils.Assets as LimeAssets;
@@ -127,6 +127,12 @@ class CoolUtil
 			FlxG.error("Platform is not supported for CoolUtil.openFolder");
 		#end
 	}
+
+	public static function coolLerp(base:Float, target:Float, ratio:Float):Float
+		return base + cameraLerp(ratio) * (target - base);
+
+	public static function cameraLerp(lerp:Float):Float
+		return lerp * (FlxG.elapsed / (1 / 60));
 
 	/**
 		Helper Function to Fix Save Files for Flixel 5

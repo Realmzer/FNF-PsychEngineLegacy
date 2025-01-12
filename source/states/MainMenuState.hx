@@ -15,6 +15,7 @@ enum MainMenuColumn {
 class MainMenuState extends MusicBeatState
 {
 	public static var psychEngineVersion:String = '1.0.1'; // This is also used for Discord RPC
+	public static var psychEngineLegacyVersion:String = '0.1'; //Identifier for the current version
 	public static var curSelected:Int = 0;
 	public static var curColumn:MainMenuColumn = CENTER;
 	var allowMouse:Bool = true; //Turn this off to block mouse movement in menus
@@ -84,13 +85,17 @@ class MainMenuState extends MusicBeatState
 		}
 
 		if (leftOption != null)
-			leftItem = createMenuItem(leftOption, 60, 490);
+			leftItem = createMenuItem(leftOption, 60, 400);
 		if (rightOption != null)
 		{
-			rightItem = createMenuItem(rightOption, FlxG.width - 60, 490);
+			rightItem = createMenuItem(rightOption, FlxG.width - 60, 400);
 			rightItem.x -= rightItem.width;
 		}
 
+		var psychVer:FlxText = new FlxText(12, FlxG.height - 64, 0, "Psych Engine Legacy v" + psychEngineLegacyVersion, 12);
+		psychVer.scrollFactor.set();
+		psychVer.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(psychVer);
 		var psychVer:FlxText = new FlxText(12, FlxG.height - 44, 0, "Psych Engine v" + psychEngineVersion, 12);
 		psychVer.scrollFactor.set();
 		psychVer.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
