@@ -27,6 +27,7 @@
 	<define name="DISCORD_ALLOWED" />
 	<!--<define name="TRANSLATIONS_ALLOWED" />--> 
 	<define name="IRIS_DEBUG"/>
+	<!-- define name="MULTITHREADED_LOADING" --> <!-- UNCOMMENTING THIS LINE WILL ENABLE MULTITHREADED LOADING, WHICH IMPROVES LOADING TIMES, BUT WITH A LOW CHANCE FOR THE GAME FREEZE ON SONG LOAD -->
 	<define name="BASE_GAME_FILES" />
 	<define name="VIDEOS_ALLOWED" if="windows || linux || android || mac" unless="32bits"/>
 	
