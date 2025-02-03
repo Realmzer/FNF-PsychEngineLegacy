@@ -154,6 +154,14 @@ class VisualsSettingsSubState extends BaseOptionsMenu
 		addOption(option);
 		#end
 
+		#if DISCORD_ALLOWED
+		var option:Option = new Option('Precise Discord Rich Presence',
+			"Check this to showcase more accurate activity descriptions.\nDiscord Rich Prescence needs to be enabled for this to work.",
+			'preciseDiscordRPC',
+			BOOL);
+		addOption(option);
+		#end
+
 		var option:Option = new Option('Combo Stacking',
 			"If unchecked, Ratings and Combo won't stack, saving on System Memory and making them easier to read",
 			'comboStacking',

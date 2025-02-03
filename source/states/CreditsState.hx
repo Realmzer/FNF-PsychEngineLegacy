@@ -21,7 +21,14 @@ class CreditsState extends MusicBeatState
 	{
 		#if DISCORD_ALLOWED
 		// Updating Discord Rich Presence
+		if(!ClientPrefs.data.preciseDiscordRPC)
+		{
 		DiscordClient.changePresence("In the Menus", null);
+		}
+		if(ClientPrefs.data.preciseDiscordRPC) 
+		{
+		DiscordClient.changePresence("In the Credits Menu", null);
+		}
 		#end
 
 		persistentUpdate = true;
@@ -40,7 +47,7 @@ class CreditsState extends MusicBeatState
 		var defaultList:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 			["Psych Engine Legacy Team"],
 			["Realmzer", 			"realmzer",  		"Head Developer, Programmer", 								"https://www.youtube.com/@Realmzer", "d14bff"],
-		//	["Kleffy", 			    "darkmania",  		"Co-Owner, Contributor, Programmer, Artist, Charter", 		"https://x.com/DarkManiaYT", "d14bff"],
+			["Kleffy", 			    "darkmania",  		"Co-Owner, Contributor, Programmer, Artist, Charter", 		"https://x.com/kleffyt", "d14bff"],
 			["PumpkinZ", 			"pumpkinz",  		"Contributor, Animator, Programmer, Charter", 				"https://www.youtube.com/@PumpkinZM", "d14bff"],
 			["Lux", 				"luxy",  			"Contributor, Artist", 										"https://www.youtube.com/channel/UC8yQe6TssX6alJhh9pY4sGw", "d14bff"],
 			["Frisky", 				"frisky",  			"Contributor", 												"hhttps://x.com/FriskyorSomesht", "d14bff"],

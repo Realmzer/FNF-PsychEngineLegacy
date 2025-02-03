@@ -54,7 +54,14 @@ class StoryMenuState extends MusicBeatState
 
 		#if DISCORD_ALLOWED
 		// Updating Discord Rich Presence
+		if(!ClientPrefs.data.preciseDiscordRPC)
+		{
 		DiscordClient.changePresence("In the Menus", null);
+		}
+		if(ClientPrefs.data.preciseDiscordRPC) 
+		{
+		DiscordClient.changePresence("In the Story Mode Menu", null);
+		}
 		#end
 
 		if(WeekData.weeksList.length < 1)

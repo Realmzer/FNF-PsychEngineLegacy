@@ -83,6 +83,18 @@ class TitleState extends MusicBeatState
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 
+		#if DISCORD_ALLOWED
+		// Updating Discord Rich Presence
+		if(!ClientPrefs.data.preciseDiscordRPC)
+		{
+		DiscordClient.changePresence("In the Menus", null);
+		}
+		if(ClientPrefs.data.preciseDiscordRPC) 
+		{
+		DiscordClient.changePresence("In the Title Screen", null);
+		}
+		#end
+
 		#if CHECK_FOR_UPDATES
 		if(ClientPrefs.data.checkForUpdates && !closedState) {
 			trace('checking for update');

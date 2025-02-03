@@ -9,6 +9,18 @@ class OutdatedState extends MusicBeatState
 	{
 		super.create();
 
+		#if DISCORD_ALLOWED
+		// Updating Discord Rich Presence
+		if(!ClientPrefs.data.preciseDiscordRPC)
+		{
+		DiscordClient.changePresence("In the Menus", null);
+		}
+		if(ClientPrefs.data.preciseDiscordRPC) 
+		{
+		DiscordClient.changePresence("Outdated version detected!", null);
+		}
+		#end
+
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		add(bg);
 
