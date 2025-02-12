@@ -30,12 +30,12 @@ import substates.PauseSubState;
 import substates.GameOverSubstate;
 
 #if !flash
-import flixel.addons.display.FlxRuntimeShader;
 import openfl.filters.ShaderFilter;
 #end
 
-import objects.VideoSprite;
+import shaders.ErrorHandledShader;
 
+import objects.VideoSprite;
 import objects.Note.EventNote;
 import objects.*;
 import states.stages.*;
@@ -584,12 +584,7 @@ class PlayState extends MusicBeatState
 		#end
 		noteTypes = null;
 		eventsPushed = null;
-
-		if(eventNotes.length > 1)
-		{
-			for (event in eventNotes) event.strumTime -= eventEarlyTrigger(event);
-			eventNotes.sort(sortByTime);
-		}
+		
 
 		// SONG SPECIFIC SCRIPTS
 		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
@@ -607,6 +602,12 @@ class PlayState extends MusicBeatState
 				#end
 			}
 		#end
+
+		if(eventNotes.length > 0)
+			{
+				for (event in eventNotes) event.strumTime -= eventEarlyTrigger(event);
+				eventNotes.sort(sortByTime);
+			}
 
 		startCallback();
 		RecalculateRating(false, false);
@@ -679,7 +680,7 @@ class PlayState extends MusicBeatState
 		Conductor.offset = Reflect.hasField(PlayState.SONG, 'offset') ? (PlayState.SONG.offset / value) : 0;
 		Conductor.safeZoneOffset = (ClientPrefs.data.safeFrames / 60) * 1000 * value;
 		#if VIDEOS_ALLOWED
-		if(videoCutscene != null) videoCutscene.videoSprite.bitmap.rate = value;
+		if(videoCutscene != null && videoCutscene.videoSprite != null) videoCutscene.videoSprite.bitmap.rate = value;
 		#end
 		setOnScripts('playbackRate', playbackRate);
 		#else
@@ -845,8 +846,8 @@ class PlayState extends MusicBeatState
 
 		if (foundFile)
 		{
-			videoCutscene = new VideoSprite(fileName, forMidSong, canSkip, loop, false);
-			videoCutscene.videoSprite.bitmap.rate = playbackRate;
+			videoCutscene = new VideoSprite(fileName, forMidSong, canSkip, loop);
+			if(forMidSong) videoCutscene.videoSprite.bitmap.rate = playbackRate;
 
 			// Finish callback
 			if (!forMidSong)
@@ -1489,9 +1490,8 @@ class PlayState extends MusicBeatState
 	}
 
 	function eventEarlyTrigger(event:EventNote):Float {
-		var returnedValue:Dynamic = callOnScripts('eventEarlyTrigger', [event.event, event.value1, event.value2, event.strumTime], true, [], [0]);
-		returnedValue = Std.parseFloat(returnedValue);
-		if(!Math.isNaN(returnedValue) && returnedValue != 0) {
+		var returnedValue:Null<Float> = callOnScripts('eventEarlyTrigger', [event.event, event.value1, event.value2, event.strumTime], true);
+		if(returnedValue != null && returnedValue != 0) {
 			return returnedValue;
 		}
 
@@ -1575,9 +1575,6 @@ class PlayState extends MusicBeatState
 			}
 			FlxTimer.globalManager.forEach(function(tmr:FlxTimer) if(!tmr.finished) tmr.active = false);
 			FlxTween.globalManager.forEach(function(twn:FlxTween) if(!twn.finished) twn.active = false);
-			#if VIDEOS_ALLOWED
-			if(videoCutscene != null) videoCutscene.pause();
-			#end
 		}
 
 		super.openSubState(SubState);
@@ -1607,32 +1604,26 @@ class PlayState extends MusicBeatState
 		}
 	}
 
+	#if DISCORD_ALLOWED
 	override public function onFocus():Void
 	{
-		if (!paused)
-			{
-				if (health > 0) resetRPC(Conductor.songPosition > 0.0);
-				#if VIDEOS_ALLOWED
-				if (videoCutscene != null) videoCutscene.resume();
-				#end	
-			}
 		super.onFocus();
+		if (!paused && health > 0)
+			{
+				resetRPC(Conductor.songPosition > 0.0);
+			}
 	}
 
 	override public function onFocusLost():Void
 	{
-		if (!paused)
+		super.onFocusLost();
+		if (!paused && health > 0 && autoUpdateRPC)
 			{
-				#if DISCORD_ALLOWED
-				if (health > 0 && autoUpdateRPC) DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
-				#end
-				#if VIDEOS_ALLOWED
-				if (videoCutscene != null) videoCutscene.pause();
-				#end
+				DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
 			}
 
-		super.onFocusLost();
 	}
+	#end
 
 	// Updating Discord Rich Presence.
 	public var autoUpdateRPC:Bool = true; //performance setting for custom RPC things
@@ -3353,7 +3344,7 @@ class PlayState extends MusicBeatState
 	#end
 
 	public function callOnScripts(funcToCall:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
-		var returnVal:String = LuaUtils.Function_Continue;
+		var returnVal:Dynamic = LuaUtils.Function_Continue;
 		if(args == null) args = [];
 		if(exclusions == null) exclusions = [];
 		if(excludeValues == null) excludeValues = [LuaUtils.Function_Continue];
@@ -3364,7 +3355,7 @@ class PlayState extends MusicBeatState
 	}
 
 	public function callOnLuas(funcToCall:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
-		var returnVal:String = LuaUtils.Function_Continue;
+		var returnVal:Dynamic = LuaUtils.Function_Continue;
 		#if LUA_ALLOWED
 		if(args == null) args = [];
 		if(exclusions == null) exclusions = [];
@@ -3403,7 +3394,7 @@ class PlayState extends MusicBeatState
 	}
 
 	public function callOnHScript(funcToCall:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
-		var returnVal:String = LuaUtils.Function_Continue;
+		var returnVal:Dynamic = LuaUtils.Function_Continue;
 
 		#if HSCRIPT_ALLOWED
 		if(exclusions == null) exclusions = new Array();
@@ -3575,19 +3566,19 @@ class PlayState extends MusicBeatState
 
 	#if (!flash && sys)
 	public var runtimeShaders:Map<String, Array<String>> = new Map<String, Array<String>>();
-	public function createRuntimeShader(name:String):FlxRuntimeShader
+	public function createRuntimeShader(shaderName:String):ErrorHandledRuntimeShader
 	{
-		if(!ClientPrefs.data.shaders) return new FlxRuntimeShader();
+		if(!ClientPrefs.data.shaders) return new ErrorHandledRuntimeShader(shaderName);
 
 		#if (!flash && MODS_ALLOWED && sys)
-		if(!runtimeShaders.exists(name) && !initLuaShader(name))
+		if(!runtimeShaders.exists(shaderName) && !initLuaShader(shaderName))
 		{
-			FlxG.log.warn('Shader $name is missing!');
-			return new FlxRuntimeShader();
+			FlxG.log.warn('Shader $shaderName is missing!');
+			return new ErrorHandledRuntimeShader(shaderName);
 		}
 
-		var arr:Array<String> = runtimeShaders.get(name);
-		return new FlxRuntimeShader(arr[0], arr[1]);
+		var arr:Array<String> = runtimeShaders.get(shaderName);
+		return new ErrorHandledRuntimeShader(shaderName, arr[0], arr[1]);
 		#else
 		FlxG.log.warn("Platform unsupported for Runtime Shaders!");
 		return null;
