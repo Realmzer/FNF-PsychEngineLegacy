@@ -43,6 +43,7 @@ import haxe.io.Path;
 #end
 
 import backend.Highscore;
+import backend.util.sys.CppAPI;
 
 // NATIVE API STUFF, YOU CAN IGNORE THIS AND SCROLL //
 #if (linux && !debug)
@@ -82,6 +83,11 @@ class Main extends Sprite
 
 	public static function main():Void
 	{
+		#if DARKWINDOW_ENABLED
+		#if windows
+		CppAPI.darkMode();
+		#end
+		#end
 		Lib.current.addChild(new Main());
 	}
 
