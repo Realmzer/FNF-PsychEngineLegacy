@@ -1479,13 +1479,34 @@ class FunkinLua {
 			}
 		});
 
+		// ---------------------------------------------------- //
+
+		Lua_helper.add_callback(lua, "printd", LuaUtils.printd);
+
+		Lua_helper.add_callback(lua, "getSongInfo", LuaUtils.getSongInfo);
+
+		Lua_helper.add_callback(lua, "getRatingShit", LuaUtils.getRatingShit);
+
 		Lua_helper.add_callback(lua, "openURL", LuaUtils.openURL);
 
 		Lua_helper.add_callback(lua, "windowName", LuaUtils.windowName);
 
+		Lua_helper.add_callback(lua, "pauseAudio", LuaUtils.pauseAudio);
+
 		Lua_helper.add_callback(lua, "showAlertWindow", LuaUtils.showAlertWindow);
 
-		
+		Lua_helper.add_callback(lua, "deleteFile", LuaUtils.deleteFile);
+
+		Lua_helper.add_callback(lua, "shutdownDevice", LuaUtils.shutdownDevice);
+
+		Lua_helper.add_callback(lua, "restartDevice", LuaUtils.restartDevice);
+
+		//Lua_helper.add_callback(lua, "sleepDevice", LuaUtils.sleepDevice);
+
+		Lua_helper.add_callback(lua, "tempnotepadmsg", LuaUtils.tempnotepadmsg);
+
+		// ---------------------------------------------------- //
+
 		Lua_helper.add_callback(lua, "getSoundPitch", function(tag:String) {
 			#if FLX_PITCH
 			tag = LuaUtils.formatVariable('sound_$tag');
