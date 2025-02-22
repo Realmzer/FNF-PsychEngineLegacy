@@ -45,6 +45,7 @@ class Note extends FlxSprite
 		'Alt Animation',
 		'Hey!',
 		'Hurt Note',
+		'Insta-Kill Note',
 		'GF Sing',
 		'No Animation'
 	];
@@ -225,6 +226,28 @@ class Note extends FlxSprite
 					noMissAnimation = true;
 				case 'GF Sing':
 					gfNote = true;
+				case 'Insta-Kill Note':
+					ignoreNote = mustPress;
+					//reloadNote('HURTNOTE_assets');
+					//this used to change the note texture to HURTNOTE_assets.png,
+					//but i've changed it to something more optimized with the implementation of RGBPalette:
+
+					// note colors
+					rgbShader.r = 0xFF000000;
+					rgbShader.g = 0xFFFFC400;
+					rgbShader.b = 0xFFECE90A;
+
+					// splash data and colors
+					noteSplashData.r = 0xFFEED70B;
+					noteSplashData.g = 0xFF000000;
+					noteSplashData.texture = 'noteSplashes/noteSplashes-electric';
+
+					// gameplay data
+					lowPriority = true;
+					missHealth = isSustainNote ? 999.25 : 999.1;
+					hitCausesMiss = true;
+					hitsound = 'cancelMenu';
+					hitsoundChartEditor = false;
 			}
 			if (value != null && value.length > 1) NoteTypesConfig.applyNoteTypeData(this, value);
 			if (hitsound != 'hitsound' && hitsoundVolume > 0) Paths.sound(hitsound); //precache new sound for being idiot-proof

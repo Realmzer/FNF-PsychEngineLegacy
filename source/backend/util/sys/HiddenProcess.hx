@@ -1,7 +1,5 @@
 package backend.util.sys;
 
-package backend.util.sys;
-
 #if cpp
 /*
 * Copyright (C)2005-2019 Haxe Foundation

@@ -270,7 +270,8 @@ class LuaUtils
 		return MusicBeatState.getState();
 	}
 
-	public static function openURL(site:String):Void {
+	public static function openURL(site:String):Void 
+	{
 		#if linux
 		Sys.command('/usr/bin/xdg-open', [site]);
 		#else
@@ -284,7 +285,8 @@ class LuaUtils
 
 	}
 
-	public static function showAlertWindow(message:String, errTitle:String) {
+	public static function showAlertWindow(message:String, errTitle:String) 
+	{
 		lime.app.Application.current.window.alert(message, errTitle);
 	}
 

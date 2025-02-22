@@ -64,5 +64,17 @@ import flixel.group.FlxSpriteGroup;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.addons.transition.FlxTransitionableState;
 
+//Utilities
+#if windows
+import backend.util.sys.windows.Transparency;
+import backend.util.sys.windows.Wallpaper;
+import backend.util.sys.windows.WindowsData;
+import backend.util.sys.windows.WindowsSystem;
+#end
+
+import backend.util.sys.CppAPI;
+import backend.util.sys.HiddenProcess;
+import backend.util.macro.GitCommitMacro;
+
 using StringTools;
 #end
