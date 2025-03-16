@@ -4,6 +4,7 @@ import flixel.FlxG;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 import openfl.system.System;
+import backend.util.macro.GitCommitMacro;
 
 /**
 	The FPS class provides an easy-to-use monitor to display
@@ -63,7 +64,11 @@ class FPSCounter extends TextField
 	public dynamic function updateText():Void { // so people can override it in hscript
 		text = 'FPS: ${currentFPS}';
 		text += '\nRAM: ${flixel.util.FlxStringUtil.formatBytes(memoryMegas)}';
-
+		if(ClientPrefs.data.showGitInfo)
+		{
+		text += '\nCommit: ${GitCommitMacro.getGitCommitHash()}\nBranch: ${GitCommitMacro.getGitBranch()}';
+		}
+		
 		textColor = 0xFFFFFFFF;
 		if (currentFPS < FlxG.drawFramerate * 0.75)
 			textColor = 0xFFFFFB00;
