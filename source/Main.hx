@@ -27,7 +27,7 @@ import psychlua.HScript.HScriptInfos;
 import backend.ClientPrefs;
 import objects.FunkinSoundTray;
 
-#if linux
+#if (linux || mac)
 import lime.graphics.Image;
 #end
 
@@ -211,7 +211,7 @@ class Main extends Sprite
 		}
 		#end
 
-		#if linux
+		#if (linux || mac) // fix the app icon not showing up on the Linux Panel / Mac Dock
 		var icon = Image.fromFile("icon.png");
 		Lib.current.stage.window.setIcon(icon);
 		#end
